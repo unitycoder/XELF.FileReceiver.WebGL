@@ -1,9 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class OpenURLHelper : MonoBehaviour {
-	public void OpenURL(string url) {
-		Application.OpenURL(url);
-	}
+namespace web.utils
+{
+    public class OpenURLHelper : MonoBehaviour
+    {
+        public void OpenURL(string url)
+        {
+            Application.OpenURL(url);
+        }
+    }
 }

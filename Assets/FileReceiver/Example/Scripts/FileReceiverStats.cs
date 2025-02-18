@@ -1,24 +1,40 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.Networking;
 
-/// <summary>
-/// File Receiver: file stats display edition
-/// </summary>
-public class FileReceiverStats : MonoBehaviour {
-	public TMPro.TextMeshProUGUI Url;
-	public TMPro.TextMeshProUGUI Size;
-	public TMPro.TextMeshProUGUI Error;
+namespace web.utils
+{
+    /// <summary>
+    /// File Receiver: file stats display edition
+    /// </summary>
+    public class FileReceiverStats : MonoBehaviour
+    {
+        public TMPro.TextMeshProUGUI Url;
+        public TMPro.TextMeshProUGUI Size;
+        public TMPro.TextMeshProUGUI Error;
 
-	private IEnumerator LoadFile(string url) {
-		var www = new WWW(url);
-		yield return www;
+        private IEnumerator LoadFile(string url)
+        {
+            using (UnityWebRequest www = UnityWebRequest.Get(url))
+            {
+                yield return www.SendWebRequest();
 
-		Url.text = url;
-		Size.text = www.bytes.Length.ToString();
-		Error.text = www.error;
-	}
+                if (!www.isNetworkError && !www.isHttpError)
+                {
+                    Error.text = www.error;
+                }
+                else
+                {
+                    Url.text = url;
+                    Size.text = www.downloadHandler.data.Length.ToString();
+                    Error.text = string.Empty;
+                }
+            }
+        }
 
-	public void FileSelected(string url) {
-		StartCoroutine(LoadFile(url));
-	}
+        public void FileSelected(string url)
+        {
+            StartCoroutine(LoadFile(url));
+        }
+    }
 }
